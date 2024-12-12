@@ -1,0 +1,67 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Title TextView -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/title_content_description" />
+
+    <!-- Custom View -->
+    <com.example.finalexamapp.CustomView
+        android:id="@+id/customView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.2"
+        android:contentDescription="@string/custom_view_content_description" />
+
+    <!-- Button to Show Snackbar -->
+    <Button
+        android:id="@+id/buttonSnackbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Afficher Snackbar"
+        app:layout_constraintTop_toBottomOf="@id/customView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.3"
+        android:contentDescription="@string/button_snackbar_content_description" />
+
+    <!-- Button to Schedule Task -->
+    <Button
+        android:id="@+id/buttonScheduleTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Planifier une tâche"
+        app:layout_constraintTop_toBottomOf="@id/buttonSnackbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.4"
+        android:contentDescription="@string/button_schedule_task_content_description" />
+
+    <!-- Button to Show Notification -->
+    <Button
+        android:id="@+id/buttonNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Afficher Notification"
+        app:layout_constraintTop_toBottomOf="@id/buttonScheduleTask"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        android:contentDescription="@string/button_notification_content_description" />
+</androidx.constraintlayout.widget.ConstraintLayout>
