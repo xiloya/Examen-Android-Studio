@@ -3,9 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="18dp">
 
-    <!-- Title TextView -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
@@ -18,16 +17,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/title_content_description" />
 
-    <!-- Custom View -->
     <com.example.finalexamapp.CustomView
         android:id="@+id/customView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.2"
-        android:contentDescription="@string/custom_view_content_description" />
+        android:contentDescription="@string/custom_view_content_description"
+        android:layout_marginTop="16dp" />
 
     <!-- Button to Show Snackbar -->
     <Button
@@ -64,6 +63,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.5"
         android:contentDescription="@string/button_notification_content_description" />
+
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -72,6 +73,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="50dp" />
+
+    <!-- Insert Data Button -->
+    <Button
+        android:id="@+id/buttonInsertData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Insert Data"
+        android:contentDescription="Insert data into the database"
+        app:layout_constraintTop_toBottomOf="@id/buttonNotification"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/buttonFetchData"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
+
+    <!-- Fetch Data Button -->
+    <Button
+        android:id="@+id/buttonFetchData"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Fetch Data"
+        android:contentDescription="Fetch data from the database"
+        app:layout_constraintTop_toBottomOf="@id/buttonNotification"
+        app:layout_constraintStart_toEndOf="@id/buttonInsertData"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

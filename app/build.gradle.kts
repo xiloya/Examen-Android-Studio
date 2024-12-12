@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -70,6 +71,9 @@ dependencies {
     implementation ("androidx.work:work-runtime-ktx:2.8.0")
     implementation ("androidx.recyclerview:recyclerview:1.3.0")
     implementation ("androidx.paging:paging-runtime-ktx:3.1.0")
+    implementation ("androidx.room:room-runtime:2.5.0")
+    kapt ("androidx.room:room-compiler:2.5.0")
+
 
 
 }
