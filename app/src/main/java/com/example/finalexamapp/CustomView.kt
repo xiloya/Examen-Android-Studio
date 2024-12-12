@@ -14,11 +14,7 @@ class CustomView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
-        // Draw a cyan background
         canvas.drawColor(Color.CYAN)
-
-        // Draw text in the center
         val paint = Paint().apply {
             color = Color.BLACK
             textSize = 50f

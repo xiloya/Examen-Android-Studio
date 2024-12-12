@@ -7,7 +7,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class MyAdapter : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
-    private val data = listOf("Item 1", "Item 2", "Item 3", "Item 4", "Item 5")
+
+    private var data: List<String> = listOf()
+
+    fun updateData(newData: List<String>) {
+        data = newData
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)

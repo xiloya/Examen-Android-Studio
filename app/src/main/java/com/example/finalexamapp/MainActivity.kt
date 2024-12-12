@@ -3,14 +3,17 @@ package com.example.finalexamapp
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -21,21 +24,27 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var nameEditText: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Initialize the Room database
+        // Initialize Room Database
         db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "database-name"
         ).build()
 
+
+        sharedPreferences = getSharedPreferences("FinalExamPrefs", Context.MODE_PRIVATE)
+        nameEditText = findViewById(R.id.nameEditText)
+
         // Toast message
         Toast.makeText(this, getString(R.string.toast_message), Toast.LENGTH_LONG).show()
 
-        // Button listeners
+        //button listeners
         findViewById<Button>(R.id.buttonSnackbar).setOnClickListener {
             val rootView = findViewById<View>(android.R.id.content)
             Snackbar.make(rootView, getString(R.string.snackbar_message), Snackbar.LENGTH_SHORT).show()
@@ -49,20 +58,30 @@ class MainActivity : AppCompatActivity() {
             showNotification()
         }
 
-        // Button to insert data into the database
         findViewById<Button>(R.id.buttonInsertData).setOnClickListener {
-            insertDataToDatabase()
+            val name = nameEditText.text.toString().trim()
+            if (name.isNotEmpty()) {
+                insertDataToDatabase(name)
+            } else {
+                Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // Button to fetch data from the database
+        //  Display the last saved user name
         findViewById<Button>(R.id.buttonFetchData).setOnClickListener {
-            fetchDataFromDatabase()
+            fetchUserPreferences()
         }
 
-        // RecyclerView setup
+        //RecyclerView
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = MyAdapter()
+        val adapter = MyAdapter()
+        recyclerView.adapter = adapter
+
+        // Observe LiveData
+        db.userDao().getAllUsers().observe(this, Observer { users ->
+            adapter.updateData(users.map { it.name })
+        })
     }
 
     private fun showNotification() {
@@ -97,24 +116,26 @@ class MainActivity : AppCompatActivity() {
         Log.d("MainActivity", "Tâche en arrière-plan planifiée")
     }
 
-    // Insert data into Room database
-    private fun insertDataToDatabase() {
-        val userDao = db.userDao() // Get the DAO from the database
-        val user = User(id = 1, name = "John Doe")
+    // Insert into database
+    private fun insertDataToDatabase(name: String) {
+        val user = User(name = name)
         Thread {
-            userDao.insert(user)
-            Log.d("MainActivity", "User inserted into the database")
+            db.userDao().insertUser(user)
+            saveUserPreferences(name)
+            Log.d("MainActivity", "User inserted into the database: $name")
         }.start()
     }
 
-    // Fetch data from  database
-    private fun fetchDataFromDatabase() {
-        val userDao = db.userDao()
-        Thread {
-            val users = userDao.getAll()
-            for (user in users) {
-                Log.d("MainActivity", "User: ${user.name}")
-            }
-        }.start()
+    // Save the user preferences in SharedPreferences
+    private fun saveUserPreferences(name: String) {
+        sharedPreferences.edit()
+            .putString("lastUser", name)
+            .apply()
+    }
+
+    // Fetch the last user from SharedPreferences
+    private fun fetchUserPreferences() {
+        val lastUser = sharedPreferences.getString("lastUser", "No user found")
+        Toast.makeText(this, "Last User: $lastUser", Toast.LENGTH_SHORT).show()
     }
 }

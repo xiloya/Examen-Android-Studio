@@ -1,5 +1,6 @@
 package com.example.finalexamapp
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -7,8 +8,8 @@ import androidx.room.Query
 @Dao
 interface UserDao {
     @Query("SELECT * FROM User")
-    fun getAll(): List<User>
+    fun getAllUsers(): LiveData<List<User>>
 
     @Insert
-    fun insert(user: User)
+    fun insertUser(user: User)
 }
