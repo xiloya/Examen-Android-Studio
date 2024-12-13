@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d("MainActivity", "onCreate: Activity initialized")
 
         // Initialize Room Database
         db = Room.databaseBuilder(
@@ -37,14 +38,10 @@ class MainActivity : AppCompatActivity() {
             AppDatabase::class.java, "database-name"
         ).build()
 
-
         sharedPreferences = getSharedPreferences("FinalExamPrefs", Context.MODE_PRIVATE)
         nameEditText = findViewById(R.id.nameEditText)
 
-        // Toast message
-        Toast.makeText(this, getString(R.string.toast_message), Toast.LENGTH_LONG).show()
-
-        //button listeners
+        // Button listeners
         findViewById<Button>(R.id.buttonSnackbar).setOnClickListener {
             val rootView = findViewById<View>(android.R.id.content)
             Snackbar.make(rootView, getString(R.string.snackbar_message), Snackbar.LENGTH_SHORT).show()
@@ -63,16 +60,16 @@ class MainActivity : AppCompatActivity() {
             if (name.isNotEmpty()) {
                 insertDataToDatabase(name)
             } else {
+                Log.w("MainActivity", "Insert button clicked with empty name")
                 Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show()
             }
         }
 
-        //  Display the last saved user name
         findViewById<Button>(R.id.buttonFetchData).setOnClickListener {
             fetchUserPreferences()
         }
 
-        //RecyclerView
+        // RecyclerView
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = MyAdapter()
@@ -80,6 +77,13 @@ class MainActivity : AppCompatActivity() {
 
         // Observe LiveData
         db.userDao().getAllUsers().observe(this, Observer { users ->
+            if (users.isEmpty()) {
+                Log.w("MainActivity", "No users found in the database")
+            } else {
+                for ((index, user) in users.withIndex()) {
+                    Log.d("MainActivity", "User at index $index: ${user.name}")
+                }
+            }
             adapter.updateData(users.map { it.name })
         })
     }
@@ -113,29 +117,29 @@ class MainActivity : AppCompatActivity() {
     private fun scheduleBackgroundTask() {
         val workRequest = OneTimeWorkRequestBuilder<MyWorker>().build()
         WorkManager.getInstance(this).enqueue(workRequest)
-        Log.d("MainActivity", "Tâche en arrière-plan planifiée")
+        Log.d("MainActivity", "Background task scheduled")
     }
 
-    // Insert into database
     private fun insertDataToDatabase(name: String) {
         val user = User(name = name)
         Thread {
             db.userDao().insertUser(user)
             saveUserPreferences(name)
-            Log.d("MainActivity", "User inserted into the database: $name")
         }.start()
     }
 
-    // Save the user preferences in SharedPreferences
     private fun saveUserPreferences(name: String) {
         sharedPreferences.edit()
             .putString("lastUser", name)
             .apply()
     }
 
-    // Fetch the last user from SharedPreferences
     private fun fetchUserPreferences() {
-        val lastUser = sharedPreferences.getString("lastUser", "No user found")
-        Toast.makeText(this, "Last User: $lastUser", Toast.LENGTH_SHORT).show()
+        val lastUser = sharedPreferences.getString("lastUser", null)
+        if (lastUser != null) {
+            Toast.makeText(this, "Last user: $lastUser", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "No user found", Toast.LENGTH_SHORT).show()
+        }
     }
 }
